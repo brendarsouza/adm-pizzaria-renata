@@ -1,0 +1,21 @@
+node_modules
+.nuxt
+.output
+.data
+.env
+.env.local
+.env.production
+.env.development
+*.log
+.DS_Store
+dist
+coverage
+playwright-report
+test-results
+
+# Segredos — NUNCA comitar
+*.key
+*.pem
+firebase-adminsdk-*.json
+service-account*.json
+google-credentials*.json

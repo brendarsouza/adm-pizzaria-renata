@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #6B1A1A;
+  --color-primary-hover: #8B2020;
+  --color-accent: #A0522D;
+  --color-bg: #FAF8F5;
+  --color-surface: #F5EFE6;
+  --color-text: #2C2C2C;
+  --color-text-light: #555555;
+  --color-border: #D4C5B0;
+}
+
+@layer base {
+  html, body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+  }
+  h1 { @apply text-3xl md:text-4xl font-semibold; }
+  h2 { @apply text-2xl md:text-3xl font-semibold; }
+  h3 { @apply text-xl md:text-2xl font-semibold; }
+  a { color: var(--color-primary); }
+  a:hover { color: var(--color-primary-hover); }
+  input, select, textarea, button { font-family: inherit; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-btn px-4 py-2 text-sm font-medium
+           transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary { @apply btn bg-primary text-white hover:bg-primary-hover; }
+  .btn-secondary { @apply btn bg-surface text-text border border-border hover:bg-border/40; }
+  .btn-ghost { @apply btn text-text-light hover:text-text hover:bg-surface; }
+  .btn-danger { @apply btn bg-status-cancelled text-white hover:opacity-90; }
+
+  .card {
+    @apply bg-[color:var(--color-bg)] border border-border rounded-card p-6 shadow-card;
+  }
+  .surface {
+    @apply bg-surface border border-border rounded-card p-6;
+  }
+  .input {
+    @apply w-full rounded-btn border border-border bg-white px-3 py-2 text-sm
+           focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary;
+  }
+  .label { @apply block text-sm font-medium text-text-light mb-1; }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-open { @apply badge bg-text-light/10 text-text-light; }
+  .badge-pix { @apply badge bg-primary/10 text-primary; }
+  .badge-preparing { @apply badge bg-status-preparing/10 text-status-preparing; }
+  .badge-delivery { @apply badge bg-status-delivery/10 text-status-delivery; }
+  .badge-delivered { @apply badge bg-status-delivered/10 text-status-delivered; }
+  .badge-cancelled { @apply badge bg-status-cancelled/10 text-status-cancelled; }
+}
+
+/* Print — comanda térmica 80mm */
+@media print {
+  @page { size: 80mm auto; margin: 0; }
+  body { background: white; color: black; }
+  .no-print { display: none !important; }
+}

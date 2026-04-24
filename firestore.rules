@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function role() {
+      return request.auth.token.role;
+    }
+    function isAdmin() { return role() == 'admin'; }
+    function isAttendant() { return role() == 'attendant'; }
+    function isViewer() { return role() == 'viewer'; }
+    function canWrite() { return isAdmin() || isAttendant(); }
+
+    // Cardápio — apenas admin escreve; todos autenticados leem
+    match /pizzaFlavors/{doc}   { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /pizzaAdditionals/{d} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /snacks/{doc}         { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /snackAdditionals/{d} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /beverages/{doc}      { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /settings/{doc}       { allow read: if isSignedIn(); allow write: if isAdmin(); }
+
+    // Clientes — admin+attendant escrevem; todos leem
+    match /customers/{doc} {
+      allow read: if isSignedIn();
+      allow write: if canWrite();
+    }
+
+    // Pedidos — admin+attendant criam/atualizam; viewer apenas lê
+    match /orders/{doc} {
+      allow read: if isSignedIn();
+      allow create, update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // Counters — apenas admin/attendant (para sequencial de pedidos)
+    match /counters/{doc} {
+      allow read: if isSignedIn();
+      allow write: if canWrite();
+    }
+
+    // Users/roles — apenas admin
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Logs de alteração — leitura admin, escrita qualquer autenticado
+    match /auditLogs/{doc} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+    }
+  }
+}
